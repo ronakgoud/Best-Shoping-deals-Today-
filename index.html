@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sonix Deals | Official Premium App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #2874f0; --bg: #f1f3f6; --white: #ffffff; --star: #ffc107; --green: #388e3c; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); padding-bottom: 80px; overflow-x: hidden; }
+
+        /* --- Header & Search --- */
+        header { background: var(--primary); color: white; padding: 10px 15px; position: sticky; top: 0; z-index: 1000; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .logo-branding { font-family: 'Syncopate', sans-serif; font-size: 1.1rem; letter-spacing: 1px; }
+        .search-container { position: relative; width: 100%; }
+        .search-container input { width: 100%; padding: 10px 15px 10px 40px; border: none; border-radius: 6px; font-size: 0.9rem; outline: none; }
+        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+
+        /* --- Category Section --- */
+        .category-bar { display: flex; overflow-x: auto; background: white; padding: 15px 10px; gap: 20px; scrollbar-width: none; border-bottom: 1px solid #eee; }
+        .category-bar::-webkit-scrollbar { display: none; }
+        .cat-item { text-align: center; flex: 0 0 auto; cursor: pointer; }
+        .cat-icon { width: 50px; height: 50px; background: #f0f5ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); margin-bottom: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .cat-item span { font-size: 0.7rem; font-weight: 700; color: #444; }
+
+        /* --- Sidebar & Overlay --- */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.4s; box-shadow: 5px 0 25px rgba(0,0,0,0.2); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { background: var(--primary); color: white; padding: 30px 20px; text-align: center; }
+        .sidebar-menu { padding: 15px; }
+        .menu-item { padding: 15px; font-weight: 600; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2500; display: none; backdrop-filter: blur(2px); }
+        .overlay.active { display: block; }
+
+        /* --- Banner --- */
+        .intro-banner { margin: 10px; padding: 20px 15px; border-radius: 12px; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 12s ease infinite; color: white; text-align: center; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* --- Review System --- */
+        .review-form { background: white; padding: 20px; margin: 10px; border-radius: 12px; }
+        .review-form input, .review-form textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .btn-submit { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 800; }
+        .review-card { background: white; border-bottom: 1px solid #eee; padding: 15px; }
+
+        /* --- Product Grid --- */
+        .page { display: none; }
+        .page.active { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .img-box { width: 100%; height: 150px; padding: 10px; display: flex; align-items: center; justify-content: center; }
+        .img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* --- Bottom Nav --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; align-items: center; height: 70px; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 2000; }
+        .nav-item { text-align: center; color: #888; flex: 1; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
+
+        /* --- Modal --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 4000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 15px; overflow: hidden; position: relative; padding: 20px; }
+        .btn-buy { display: block; width: 100%; padding: 15px; background: #ff9f00; color: white; text-align: center; text-decoration: none; font-weight: 800; border-radius: 8px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></div>
+            <div class="logo-branding">SONIX DEALS</div>
+            <div><i class="fa-solid fa-bell"></i></div>
+        </div>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search for items..." onkeyup="searchProduct()">
+        </div>
+    </header>
+
+    <div class="category-bar">
+        <div class="cat-item" onclick="filterCategory('all')"><div class="cat-icon"><i class="fa-solid fa-border-all"></i></div><span>All Deals</span></div>
+        <div class="cat-item" onclick="filterCategory('Fashion')"><div class="cat-icon"><i class="fa-solid fa-shirt"></i></div><span>Fashion</span></div>
+        <div class="cat-item" onclick="filterCategory('Mobile')"><div class="cat-icon"><i class="fa-solid fa-mobile-screen-button"></i></div><span>Mobiles</span></div>
+        <div class="cat-item" onclick="filterCategory('Electronic')"><div class="cat-icon"><i class="fa-solid fa-laptop"></i></div><span>Electronics</span></div>
+        <div class="cat-item" onclick="filterCategory('Accessory')"><div class="cat-icon"><i class="fa-solid fa-headphones"></i></div><span>Gadgets</span></div>
+        <div class="cat-item" onclick="filterCategory('Home')"><div class="cat-icon"><i class="fa-solid fa-house-laptop"></i></div><span>Home</span></div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header"><h2 style="font-family:'Syncopate';">SONIX</h2></div>
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="switchPage('home')"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="menu-item" onclick="switchPage('trust')"><i class="fa-solid fa-shield-check"></i> Trust & Reviews</div>
+            <div class="menu-item" onclick="switchPage('acc')"><i class="fa-solid fa-user"></i> Account</div>
+        </div>
+    </div>
+
+    <div id="home" class="page active">
+        <div class="intro-banner">
+            <h2 style="font-family:'Syncopate';">LOOT LIVE</h2>
+            <p> Biggest Discounts are here </p>
+        </div>
+        <div class="grid" id="productGrid"></div>
+    </div>
+
+    <div id="trust" class="page">
+        <div style="text-align:center; padding:20px; background:white; border-bottom:1px solid #eee;">
+            <h2 style="font-family:'Syncopate';">TRUST & REVIEWS</h2>
+            <p style="font-size:0.8rem; color:#666;">Community Feedback</p>
+        </div>
+        <div class="review-form">
+            <input type="text" id="revUserName" placeholder="Your Name">
+            <textarea id="revUserText" rows="2" placeholder="Write a review..."></textarea>
+            <button class="btn-submit" onclick="submitReview()">Post Review</button>
+        </div>
+        <div id="reviewsList">
+            <div class="review-card"><b>Rohan Verma</b> <span style="color:var(--green); font-size:0.6rem;">Verified</span><p style="font-size:0.85rem;">Best app for budget shopping!</p></div>
+        </div>
+    </div>
+
+    <div id="acc" class="page">
+        <div style="padding:50px 20px; text-align:center; background:white; margin:15px; border-radius:15px;">
+            <div style="width:80px; height:80px; background:var(--primary); color:white; border-radius:50%; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; font-weight:800;">S</div>
+            <h3>Sonix User</h3>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home')" id="nav-home"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" onclick="switchPage('trust')" id="nav-trust" style="color:#fbc02d;"><i class="fa-solid fa-shield-heart"></i><span>Trust</span></div>
+        <div class="nav-item" onclick="switchPage('acc')" id="nav-acc"><i class="fa-solid fa-user"></i><span>Account</span></div>
+        <div class="nav-item" onclick="location.reload()"><i class="fa-solid fa-rotate"></i><span>Refresh</span></div>
+    </div>
+
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <span onclick="closeModal()" style="position:absolute; top:12px; right:20px; font-size:30px; cursor:pointer;">&times;</span>
+            <img id="modalImg" src="" style="width:100%; height:250px; object-fit:contain;">
+            <h3 id="modalName" style="margin-top:10px;"></h3>
+            <h2 id="modalPrice" style="color:var(--primary); margin:10px 0;"></h2>
+            <a href="#" id="modalLink" target="_blank" class="btn-buy">LOOT NOW</a>
+        </div>
+    </div>
+
+    <script>
+        const SHEET_ID = '1gVWKJBwy5wYucIqXalpGAmZXXdpMes9Sev50fuU1E60'; 
+        const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        let products = [];
+
+        async function init() {
+            try {
+                const res = await fetch(API_URL);
+                const text = await res.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                products = json.table.rows.map(r => ({
+                    name: r.c[0]?.v || '', price: r.c[1]?.v || '0',
+                    category: r.c[2]?.v || '', image: r.c[3]?.v || '',
+                    link: r.c[4]?.v || '#'
+                }));
+                render(products);
+                loadLocalReviews();
+            } catch (e) { console.log("Load Error"); }
+        }
+
+        function render(data) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = data.map(p => `
+                <div class="card" onclick="openModal(${products.indexOf(p)})">
+                    <div class="img-box"><img src="${p.image}"></div>
+                    <div class="info">
+                        <p style="font-size:0.8rem; font-weight:600; height:2.2em; overflow:hidden;">${p.name}</p>
+                        <p style="font-weight:800;">₹${p.price}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            if(cat === 'all') render(products);
+            else render(products.filter(p => p.category.includes(cat)));
+            switchPage('home');
+        }
+
+        function searchProduct() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            render(products.filter(p => p.name.toLowerCase().includes(q)));
+        }
+
+        function submitReview() {
+            const name = document.getElementById('revUserName').value;
+            const text = document.getElementById('revUserText').value;
+            if(!name || !text) return;
+            const rev = { name, text };
+            let reviews = JSON.parse(localStorage.getItem('sx_rev')) || [];
+            reviews.unshift(rev);
+            localStorage.setItem('sx_rev', JSON.stringify(reviews));
+            addReviewUI(rev, true);
+        }
+
+        function addReviewUI(r, isNew) {
+            const html = `<div class="review-card"><b>${r.name}</b><p style="font-size:0.85rem;">${r.text}</p></div>`;
+            document.getElementById('reviewsList').insertAdjacentHTML(isNew ? 'afterbegin' : 'beforeend', html);
+        }
+
+        function loadLocalReviews() {
+            (JSON.parse(localStorage.getItem('sx_rev')) || []).forEach(r => addReviewUI(r, false));
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
+        function openModal(idx) {
+            const p = products[idx];
+            document.getElementById('modalImg').src = p.image;
+            document.getElementById('modalName').innerText = p.name;
+            document.getElementById('modalPrice').innerText = '₹' + p.price;
+            document.getElementById('modalLink').href = p.link;
+            document.getElementById('productModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('productModal').style.display = 'none'; }
+
+        function switchPage(pId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('nav-' + pId).classList.add('active');
+            if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+        }
+
+        init();
+    </script>
+</body>
+</html>
